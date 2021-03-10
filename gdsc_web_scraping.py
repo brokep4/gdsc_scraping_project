@@ -11,6 +11,16 @@ keywords = ["restaurants","gym", "cinema", "cafe"]
 
 browser = None
 city = None
+customer_hotel = None
+customer_location = None
+
+def google_search(browser, search):
+	browser.get("https://google.com/")
+	search_box = browser.find_element_by_xpath('//input[@name="q"]')
+	search_box.send_keys(search)
+	search_form = browser.find_element_by_xpath('//form[@role="search"]')
+	search_form.submit()
+
 
 def initialize_browser():
 	global browser
@@ -54,12 +64,16 @@ def crawl_page():
 
 def crawl(keyword):
 	global city
+	global browser
+	"""
 	browser.get("https://google.com/")
 	search_box = browser.find_element_by_xpath('//input[@name="q"]')
 	search = city + " " + keyword
 	search_box.send_keys(search)
 	search_form = browser.find_element_by_xpath('//form[@role="search"]')
 	search_form.submit()
+	"""
+	google_search(browser,city + " " + keyword)
 	all_a_links = browser.find_elements_by_xpath('//a')
 	right_a_link = None
 	pauza(5.0)
@@ -89,16 +103,34 @@ def crawl(keyword):
 			print("ALL",keyword,"FOUND")
 			break
 			
-
+def get_hotel_location(hotel_name):
+	#/html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+	#/html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+	global customer_location
+	global city
+	if city not in hotel_name:
+		hotel_name = hotel_name + " " + city
+	temp_browser = webdriver.Firefox()
+	google_search(temp_browser,hotel_name)
+	pauza(10.0)
+	customer_location = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
+	print(customer_location)
 
 def main():
 	global city
+	global customer_hotel
+	global customer_location
 	initialize_browser()
 	if initialize_browser == None:
 		print("ERROR WHILE BROWSER INITIALIZATION")
 		close_browser()
 		exit()
 	city = input("Please enter city name:")
+	customer_hotel = input("Please enter name of your hotel(alternatively enter -1 to input address of your location):")
+	get_hotel_location(customer_hotel)
+	if customer_hotel == "-1":
+		customer_location = input("Please enter your location:")
+
 	if city == None:
 		print("ERROR WHILE CITY NAME INPUT")
 		close_browser()
