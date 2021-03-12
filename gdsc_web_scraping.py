@@ -117,16 +117,16 @@ def crawl(keyword):
 def crawl_hotels():
     #/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a
     global city
-    temp_browser = webdriver.Firefox()
+    global browser
     search = city + " hotels"
-    google_search(temp_browser,search)
+    google_search(browser,search)
     pauza(12.0)
-    view_more_button = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a')
+    view_more_button = browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a')
     view_more_button.click()
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[1]/div/a
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[2]/div/a
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[16]/div/a
-    all_hotels = temp_browser.find_elements_by_xpath('//c-wiz')
+    all_hotels = browser.find_elements_by_xpath('//c-wiz')
     pauza(10.0)
     for hotel in all_hotels:
         #print("HERE")
@@ -142,7 +142,7 @@ def crawl_hotels():
             print(hotel_name,hotel_price)
         except:
             continue
-    temp_browser.quit()
+    browser.quit()
 
 def get_hotel_location(hotel_name):
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
@@ -189,8 +189,8 @@ def main():
     for keyword in keywords:
         crawl(keyword)
     time.sleep(10)
-    close_browser()
     crawl_hotels()
+    close_browser()
     time.sleep(10)
 
 
