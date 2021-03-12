@@ -1,6 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+
 import os
 import random
 import time
@@ -27,7 +31,6 @@ def initialize_browser():
     # opts.add_argument('--headless')
     browser = webdriver.Firefox()
 
-
 def close_browser():
     global browser
     # browser.close()
@@ -43,6 +46,7 @@ def crawl_page():
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/span/div[1]/span[2]
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/span/div[1]/span[1]
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/span/div[2]/span/span
+    global browser
     all_a_links = browser.find_elements_by_xpath('//a')
     bar_jedan = False  # ovim Bool-om proveravamo da li je strana poslednja ili ne to jest da li postoji bar jedan restoran na strani
     total = 0
@@ -105,6 +109,27 @@ def crawl(keyword):
             print("ALL", keyword, "FOUND")
             break
 
+def crawl_hotels():
+    #/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a
+    global city
+    temp_browser = webdriver.Firefox()
+    search = city + " hotels"
+    google_search(temp_browser,search)
+    pauza(10.0)
+    view_more_button = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a')
+    view_more_button.click()
+    #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[1]/div/a
+    #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[2]/div/a
+    #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[16]/div/a
+    all_hotels = temp_browser.find_elements_by_xpath('//c-wiz')
+    for hotel in all_hotels:
+        print("HERE")
+        try:
+            hotel_name = hotel.find_element_by_xpath('./div/a').text
+            print(hotel_name)
+        except:
+            continue
+    temp_browser.quit()
 
 def get_hotel_location(hotel_name):
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
@@ -131,14 +156,17 @@ def main():
     global city
     global customer_hotel
     global customer_location
+    global browser
     initialize_browser()
-    if initialize_browser == None:
+    if browser == None:
         print("ERROR WHILE BROWSER INITIALIZATION")
         close_browser()
         exit()
     city = input("Please enter city name:")
     customer_hotel = input("Please enter name of your hotel(alternatively enter -1 to input address of your location):")
-    hotel_location_success = get_hotel_location(customer_hotel)
+    hotel_location_success = None
+    if customer_hotel != "-1":
+        hotel_location_success = get_hotel_location(customer_hotel)
     if customer_hotel == "-1" or hotel_location_success == -1:
         customer_location = input("Please enter your location:")
     if city == None:
@@ -149,6 +177,8 @@ def main():
         crawl(keyword)
     time.sleep(10)
     close_browser()
+    #crawl_hotels()
+    time.sleep(10)
 
 
 if __name__ == "__main__":
