@@ -144,13 +144,16 @@ def crawl_hotels():
             # /html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[1]/div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]
             hotel_root_element = hotel.find_element_by_xpath('./div/a') # ovo je <a> koji sadrzi sve podatke o konkretnom hotelu
             hotel_name = hotel_root_element.get_attribute("aria-label") # text
+            hotel_rating = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[1]/div[1]/a/div/span/span/span/span[1]/span/span[1]').text
+            hotel_reviews = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[1]/div[1]/a/div/span/span/span/span[1]/span/span[3]').text
+            hotel_reviews = hotel_reviews[:-10]
+            hotel_reviews = hotel_reviews.replace('.', '')
             hotel_price = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]').text
-            hotel_price = hotel_price.replace(',','')
+            hotel_price = hotel_price[:-4]
+            hotel_price = hotel_price.replace(',', '')
             hotel_price = hotel_price.replace('.', '')
-            hotel_price = hotel_price.replace(' ','')
-            hotel_price = hotel_price.replace('RSD','')
             hotel_location = get_hotel_location2(hotel_name)
-            print(hotel_name,hotel_price,hotel_location)
+            print(hotel_name,hotel_rating,hotel_reviews,hotel_price,hotel_location)
         except:
             continue
     browser.quit()
@@ -191,6 +194,7 @@ def get_hotel_location2(hotel_name):
             '/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
         #print(location,"ZZ")
     except:
+        temp_browser.quit()
         return -1
     temp_browser.quit()
     return location
