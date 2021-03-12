@@ -217,11 +217,9 @@ def main():
         print("ERROR WHILE CITY NAME INPUT")
         close_browser()
         exit()
-    """
     for keyword in keywords:
         crawl(keyword)
     time.sleep(10)
-    """
     crawl_hotels()
     close_browser()
     time.sleep(10)
