@@ -101,7 +101,7 @@ def crawl(keyword):
         pauza(5.0)
         bar_jedan, new_total = crawl_page(keyword)
         total += new_total
-        if total >= 50:
+        if total >= 10:
             break
         if not bar_jedan:
             print("ALL", keyword, "FOUND")
@@ -120,18 +120,26 @@ def crawl_hotels():
     temp_browser = webdriver.Firefox()
     search = city + " hotels"
     google_search(temp_browser,search)
-    pauza(10.0)
+    pauza(12.0)
     view_more_button = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div/div/div/div[3]/div/g-more-link/a')
     view_more_button.click()
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[1]/div/a
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[2]/div/a
     #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[16]/div/a
     all_hotels = temp_browser.find_elements_by_xpath('//c-wiz')
+    pauza(10.0)
     for hotel in all_hotels:
-        print("HERE")
+        #print("HERE")
         try:
-            hotel_name = hotel.find_element_by_xpath('./div/a').text
-            print(hotel_name)
+            #/html/body/c-wiz[2]/div/div[2]/div/c-wiz/div/div[1]/div[2]/main/div/div[2]/c-wiz/div[6]/c-wiz[1]/div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]
+            hotel_root_element = hotel.find_element_by_xpath('./div/a')#ovo je <a> koji sadrzi sve podatke o konkretnom hotelu
+            hotel_name = hotel_root_element.get_attribute("aria-label")#text
+            hotel_price = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]').text
+            hotel_price = hotel_price.replace(',','')
+            hotel_price = hotel_price.replace('.', '')
+            hotel_price = hotel_price.replace(' ','')
+            hotel_price = hotel_price.replace('RSD','')
+            print(hotel_name,hotel_price)
         except:
             continue
     temp_browser.quit()
@@ -182,7 +190,7 @@ def main():
         crawl(keyword)
     time.sleep(10)
     close_browser()
-    #crawl_hotels()
+    crawl_hotels()
     time.sleep(10)
 
 
