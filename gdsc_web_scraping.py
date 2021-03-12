@@ -65,7 +65,12 @@ def crawl_page(keyword):
             total += 1
         except Exception as e:
             continue
-    with open(keyword+".txt","w+") as file:
+    file_path = os.path.realpath(__file__)
+    last_index = file_path.rindex('/')
+    file_path = file_path[:last_index]
+    file_path = file_path + "/" + keyword + ".txt"
+    print(file_path)
+    with open(file_path,"w+") as file:
         for tuple_of_informations in niz:
             file.write('/0'.join( [str(x) for x in tuple_of_informations] )+"\n")
     return at_least_one, total
