@@ -5,9 +5,7 @@ import os
 import random
 import time
 
-keywords = ["restaurants", "gym", "cinema", "cafe"]
-# hotele naknadno obraditi
-# ne radi gym
+keywords = ["restaurants", "cafes", "cinemas"]
 
 browser = None
 city = None
