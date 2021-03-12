@@ -41,7 +41,7 @@ def pauza(_time):
     time.sleep(_time)
 
 
-def crawl_page():
+def crawl_page(keyword):
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/div[2]/div
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/span/div[1]/span[2]
     # /html/body/div[6]/div/div[8]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div/div/div[1]/div[4]/div[6]/div/div[2]/div/a/div/span/div[1]/span[1]
@@ -50,6 +50,7 @@ def crawl_page():
     all_a_links = browser.find_elements_by_xpath('//a')
     bar_jedan = False  # ovim Bool-om proveravamo da li je strana poslednja ili ne to jest da li postoji bar jedan restoran na strani
     total = 0
+    niz = []
     for a_link in all_a_links:
         try:
             object_name = a_link.find_element_by_xpath('./div/div[2]/div').text
@@ -60,11 +61,15 @@ def crawl_page():
             object_number_of_ratings = int(object_number_of_ratings[1:-1].replace('.', ''))
             # brisanje zagrada
             print(object_name, object_rating, object_number_of_ratings, object_address)
+            niz.append((object_name, object_rating, object_number_of_ratings, object_address))
             bar_jedan = True
             total += 1
         except Exception as e:
             continue
-
+    with open(keyword+".txt","w+") as file:
+        #file.write("KURCIC")
+        for tuple_of_informations in niz:
+            file.write('/0'.join( [str(x) for x in tuple_of_informations] )+"\n")
     return bar_jedan, total
 
 
@@ -94,7 +99,7 @@ def crawl(keyword):
     total = 0
     while (True):
         pauza(5.0)
-        bar_jedan, new_total = crawl_page()
+        bar_jedan, new_total = crawl_page(keyword)
         total += new_total
         if total >= 10:
             break
