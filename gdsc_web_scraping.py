@@ -112,9 +112,11 @@ def get_hotel_location(hotel_name):
 		hotel_name = hotel_name + " " + city
 	temp_browser = webdriver.Firefox()
 	google_search(temp_browser,hotel_name)
-	pauza(10.0)
-	customer_location = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
+	pauza(13.0)
+	#/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+	customer_location = temp_browser.find_element_by_xpath('/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
 	print(customer_location)
+	temp_browser.quit()
 
 def main():
 	global city
