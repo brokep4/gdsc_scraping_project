@@ -149,7 +149,8 @@ def crawl_hotels():
             hotel_price = hotel_price.replace('.', '')
             hotel_price = hotel_price.replace(' ','')
             hotel_price = hotel_price.replace('RSD','')
-            print(hotel_name,hotel_price)
+            hotel_location = get_hotel_location2(hotel_name)
+            print(hotel_name,hotel_price,hotel_location)
         except:
             continue
     browser.quit()
@@ -172,8 +173,27 @@ def get_hotel_location(hotel_name):
         print(customer_location)
     except:
         return -1
-    return 1
     temp_browser.quit()
+    return 1
+
+def get_hotel_location2(hotel_name):
+    # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+    # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+    global city
+    if city not in hotel_name:
+        hotel_name = hotel_name + " " + city
+    temp_browser = webdriver.Firefox()
+    google_search(temp_browser, hotel_name)
+    pause(5.0)
+    # /html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+    try:
+        location = temp_browser.find_element_by_xpath(
+            '/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
+        #print(location,"ZZ")
+    except:
+        return -1
+    temp_browser.quit()
+    return location
 
 
 def main():
@@ -197,9 +217,11 @@ def main():
         print("ERROR WHILE CITY NAME INPUT")
         close_browser()
         exit()
+    """
     for keyword in keywords:
         crawl(keyword)
     time.sleep(10)
+    """
     crawl_hotels()
     close_browser()
     time.sleep(10)
