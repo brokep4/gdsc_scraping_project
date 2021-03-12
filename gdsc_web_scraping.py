@@ -59,10 +59,16 @@ def crawl_page(keyword):
             object_rating = a_link.find_element_by_xpath('./div/span/div[1]/span[1]').text
             object_address = a_link.find_element_by_xpath('./div/span/div[2]/span/span').text
             object_number_of_ratings = int(object_number_of_ratings[1:-1].replace('.', '')) # brisanje zagrada
+            a_link.click()
+            pause(3.0)
+            object_address = browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
+            #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
+            #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             print(object_name, object_rating, object_number_of_ratings, object_address)
             niz.append((object_name, object_rating, object_number_of_ratings, object_address))
             at_least_one = True
             total += 1
+            #time.sleep(8.0)
         except Exception as e:
             continue
     file_path = os.path.realpath(__file__)
