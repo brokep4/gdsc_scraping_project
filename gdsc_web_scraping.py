@@ -101,7 +101,7 @@ def crawl(keyword):
         pauza(5.0)
         bar_jedan, new_total = crawl_page(keyword)
         total += new_total
-        if total >= 10:
+        if total >= 50:
             break
         if not bar_jedan:
             print("ALL", keyword, "FOUND")
