@@ -9,7 +9,7 @@ import os
 import random
 import time
 
-keywords = ["restaurants", "cafes", "cinemas"]
+keywords = ["restaurants", "cafes","cinema"]
 
 browser = None
 city = None
@@ -38,8 +38,10 @@ def close_browsers():
     global browser
     global temp_browser
     # browser.close()
-    browser.quit()
-    temp_browser.quit()
+    if browser != None:
+        browser.quit()
+    if temp_browser != None:
+        temp_browser.quit()
 
 
 def pause(_time):
@@ -80,7 +82,6 @@ def crawl_page(keyword):
     last_index = file_path.rindex('/')
     file_path = file_path[:last_index]
     file_path = file_path + "/" + keyword + ".txt"
-    print(file_path)
     with open(file_path,"a") as file:
         for tuple_of_informations in niz:
             file.write('/0'.join( [str(x) for x in tuple_of_informations] )+"\n")
@@ -153,16 +154,31 @@ def crawl_hotels():
             hotel_reviews = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[1]/div[1]/a/div/span/span/span/span[1]/span/span[3]').text
             hotel_reviews = hotel_reviews[:-10]
             hotel_reviews = hotel_reviews.replace('.', '')
-            hotel_price = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]').text
+            hotel_price = -1
+            try:
+                #/div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/div[1]/span[2]/span/span[1]/span
+                hotel_price = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/span[1]/span/span[1]').text
+            except:
+                pass
+            try:
+                hotel_price = hotel.find_element_by_xpath('./div/div/div/div[1]/div/div[1]/div[2]/a/div/div/div/div[1]/span[2]/span/span[1]/span').text
+            except:
+                pass
             hotel_price = hotel_price[:-4]
             hotel_price = hotel_price.replace(',', '')
             hotel_price = hotel_price.replace('.', '')
-            hotel_location = get_hotel_location2(hotel_name)
-            print(hotel_name,hotel_rating,hotel_reviews,hotel_price,hotel_location)
+            hotel_location = None
+            try:
+                hotel_location = get_hotel_location2(hotel_name)
+            except:
+                hotel_location = None
+            if hotel_location != None:
+                print(hotel_name,hotel_rating,hotel_reviews,hotel_price,hotel_location)
+            else:
+                print(hotel_name,hotel_rating,hotel_reviews,hotel_price,"NO LOCATION FOUND")
+            #print(hotel_name)
         except:
             continue
-    browser.quit()
-
 
 def get_hotel_location(hotel_name):
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
@@ -239,14 +255,19 @@ def main():
         with open(file_path,"w+") as file:
             file.write("")
         crawl(keyword)
-    time.sleep(5)
+    pause(5)
     crawl_hotels()
     close_browsers()
-    time.sleep(4)
+    pause(2)
 
 
 if __name__ == "__main__":
     main()
 
-
-# python3 /Users/mbp/Downloads/gdsc_web_scraping.py
+#python3 /Users/mbp/Downloads/projekatsutra/projekatsutra.py
+#
+#
+#
+#
+#
+#
