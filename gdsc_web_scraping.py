@@ -16,6 +16,8 @@ city = None
 customer_hotel = None
 customer_location = None
 
+temp_browser = None
+
 
 def google_search(browser, search):
     browser.get("https://google.com/")
@@ -32,10 +34,12 @@ def initialize_browser():
     browser = webdriver.Firefox()
 
 
-def close_browser():
+def close_browsers():
     global browser
+    global temp_browser
     # browser.close()
     browser.quit()
+    temp_browser.quit()
 
 
 def pause(_time):
@@ -60,8 +64,9 @@ def crawl_page(keyword):
             object_address = a_link.find_element_by_xpath('./div/span/div[2]/span/span').text
             object_number_of_ratings = int(object_number_of_ratings[1:-1].replace('.', '')) # brisanje zagrada
             a_link.click()
-            pause(3.0)
-            object_address = browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
+            pause(1.0)
+            object_address = WebDriverWait(browser, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]"))).text#browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
+            #pause(2.0)
             #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             print(object_name, object_rating, object_number_of_ratings, object_address)
@@ -164,9 +169,11 @@ def get_hotel_location(hotel_name):
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
     global customer_location
     global city
+    global temp_browser
     if city not in hotel_name:
         hotel_name = hotel_name + " " + city
-    temp_browser = webdriver.Firefox()
+    if temp_browser == None:
+        temp_browser = webdriver.Firefox()
     google_search(temp_browser, hotel_name)
     pause(13.0)
     # /html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
@@ -176,16 +183,17 @@ def get_hotel_location(hotel_name):
         print(customer_location)
     except:
         return -1
-    temp_browser.quit()
     return 1
 
 def get_hotel_location2(hotel_name):
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
     # /html/body/div[7]/div/div[9]/div[3]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
     global city
+    global temp_browser
     if city not in hotel_name:
         hotel_name = hotel_name + " " + city
-    temp_browser = webdriver.Firefox()
+    if temp_browser == None:
+        temp_browser = webdriver.Firefox()
     google_search(temp_browser, hotel_name)
     pause(5.0)
     # /html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
@@ -195,12 +203,10 @@ def get_hotel_location2(hotel_name):
         location = temp_browser.find_element_by_xpath(
             '/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
         """
-        location = WebDriverWait(temp_browser, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]"))).text
+        location = WebDriverWait(temp_browser, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]"))).text
         #print(location,"ZZ")
     except:
-        temp_browser.quit()
         return -1
-    temp_browser.quit()
     return location
 
 
@@ -229,7 +235,7 @@ def main():
         crawl(keyword)
     time.sleep(10)
     crawl_hotels()
-    close_browser()
+    close_browsers()
     time.sleep(10)
 
 
