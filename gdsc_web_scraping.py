@@ -81,7 +81,7 @@ def crawl_page(keyword):
     file_path = file_path[:last_index]
     file_path = file_path + "/" + keyword + ".txt"
     print(file_path)
-    with open(file_path,"w+") as file:
+    with open(file_path,"a") as file:
         for tuple_of_informations in niz:
             file.write('/0'.join( [str(x) for x in tuple_of_informations] )+"\n")
     return at_least_one, total
@@ -115,7 +115,7 @@ def crawl(keyword):
         pause(5.0)
         at_least_one, new_total = crawl_page(keyword)
         total += new_total
-        if total >= 20:
+        if total >= 40:
             break
         if not at_least_one:
             print("ALL", keyword, "FOUND")
@@ -195,7 +195,7 @@ def get_hotel_location2(hotel_name):
     if temp_browser == None:
         temp_browser = webdriver.Firefox()
     google_search(temp_browser, hotel_name)
-    pause(5.0)
+    #pause(5.0)
     # /html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
     location = None
     try:
@@ -203,7 +203,7 @@ def get_hotel_location2(hotel_name):
         location = temp_browser.find_element_by_xpath(
             '/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
         """
-        location = WebDriverWait(temp_browser, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]"))).text
+        location = WebDriverWait(temp_browser, 4).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]"))).text
         #print(location,"ZZ")
     except:
         return -1
@@ -232,11 +232,17 @@ def main():
         close_browsers()
         exit()
     for keyword in keywords:
+        file_path = os.path.realpath(__file__)
+        last_index = file_path.rindex('/')
+        file_path = file_path[:last_index]
+        file_path = file_path + "/" + keyword + ".txt"
+        with open(file_path,"w+") as file:
+            file.write("")
         crawl(keyword)
-    time.sleep(10)
+    time.sleep(5)
     crawl_hotels()
     close_browsers()
-    time.sleep(10)
+    time.sleep(4)
 
 
 if __name__ == "__main__":
