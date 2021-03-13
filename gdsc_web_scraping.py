@@ -60,15 +60,24 @@ def crawl_page(keyword):
     niz = []
     for a_link in all_a_links:
         try:
+            #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             object_name = a_link.find_element_by_xpath('./div/div[2]/div').text
             object_number_of_ratings = a_link.find_element_by_xpath('./div/span/div[1]/span[2]').text
             object_rating = a_link.find_element_by_xpath('./div/span/div[1]/span[1]').text
-            object_address = a_link.find_element_by_xpath('./div/span/div[2]/span/span').text
+            object_address = None
+            try:
+                object_address = a_link.find_element_by_xpath('./div/span/div[2]/span/span').text
+            except Exception as e:
+                pass
             object_number_of_ratings = int(object_number_of_ratings[1:-1].replace('.', '')) # brisanje zagrada
-            a_link.click()
-            pause(1.0)
-            object_address = WebDriverWait(browser, 0.1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]"))).text#browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
-            #pause(2.0)
+            if object_address == None:
+                pause(1.0)
+                a_link.click()
+                pause(1.0)
+                try:
+                    object_address = WebDriverWait(browser, 2.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]"))).text#browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
+                except Exception as e:
+                    pass
             #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             #/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]
             print(object_name, object_rating, object_number_of_ratings, object_address)
@@ -116,7 +125,7 @@ def crawl(keyword):
         pause(5.0)
         at_least_one, new_total = crawl_page(keyword)
         total += new_total
-        if total >= 40:
+        if total >= 10:
             break
         if not at_least_one:
             print("ALL", keyword, "FOUND")
