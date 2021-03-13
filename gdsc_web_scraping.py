@@ -189,9 +189,13 @@ def get_hotel_location2(hotel_name):
     google_search(temp_browser, hotel_name)
     pause(5.0)
     # /html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]
+    location = None
     try:
+        """
         location = temp_browser.find_element_by_xpath(
             '/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]').text
+        """
+        location = WebDriverWait(temp_browser, 1).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[7]/div/div[9]/div[2]/div/div[1]/div/div[1]/div/div[4]/div/div[2]/div/div/span[2]"))).text
         #print(location,"ZZ")
     except:
         temp_browser.quit()
