@@ -101,10 +101,10 @@ def crawl(keyword):
     google_search(browser, city + " " + keyword)
     all_a_links = browser.find_elements_by_xpath('//a')
     right_a_link = None
-    pause(5.0)
-    right_a_link = browser.find_element_by_xpath('//a[@class="Q2MMlc"]')
+    #pause(5.0)
+    right_a_link = WebDriverWait(browser, 3).until(EC.element_to_be_clickable((By.XPATH, '//a[@class="Q2MMlc"]')))#browser.find_element_by_xpath('//a[@class="Q2MMlc"]')
     """
-    for a_object in all_a_links:
+    for a_object in all_a_links
         if "search" in a_object.get_attribute("href"):
             right_a_link = a_object
             break
@@ -115,7 +115,7 @@ def crawl(keyword):
         pause(5.0)
         at_least_one, new_total = crawl_page(keyword)
         total += new_total
-        if total >= 10:
+        if total >= 20:
             break
         if not at_least_one:
             print("ALL", keyword, "FOUND")
