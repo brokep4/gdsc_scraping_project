@@ -71,9 +71,8 @@ def crawl_page(keyword):
                 pass
             object_number_of_ratings = int(object_number_of_ratings[1:-1].replace('.', '')) # brisanje zagrada
             if object_address == None:
-                pause(1.0)
                 a_link.click()
-                pause(1.0)
+                pause(2.0)
                 try:
                     object_address = WebDriverWait(browser, 2.5).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]"))).text#browser.find_element_by_xpath('/html/body/div[6]/div/div[8]/div[2]/div/div[2]/async-local-kp/div/div/div[1]/div/div/div/div[1]/div/div[1]/div/div[3]/div/div[3]/div/div/span[2]').text
                 except Exception as e:
