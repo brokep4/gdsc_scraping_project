@@ -218,7 +218,7 @@ def main():
     initialize_browser()
     if browser == None:
         print("ERROR WHILE BROWSER INITIALIZATION")
-        close_browser()
+        close_browsers()
         exit()
     city = input("Please enter city name: ")
     customer_hotel = input("Please enter name of your hotel(alternatively enter -1 to input address of your location): ")
@@ -229,7 +229,7 @@ def main():
         customer_location = input("Please enter your location: ")
     if city == None:
         print("ERROR WHILE CITY NAME INPUT")
-        close_browser()
+        close_browsers()
         exit()
     for keyword in keywords:
         crawl(keyword)
